@@ -151,7 +151,7 @@ namespace R34Downloader.Services
                     var skippedStatus = pid + i + 1;
                     progress.Report(skippedStatus);
                     progress2.Report(skippedStatus);
-                    PauseAwareDelay(100);
+                    PauseAwareDelay(500);
                     continue;
                 }
 
@@ -199,7 +199,7 @@ namespace R34Downloader.Services
                 progress.Report(reportStatus);
                 progress2.Report(reportStatus);
 
-                PauseAwareDelay(100);
+                PauseAwareDelay(500);
             }
         }
 
@@ -343,23 +343,45 @@ namespace R34Downloader.Services
                 }
             };
 
-            for (int attempt = 1; attempt <= 3; attempt++)
+            for (int attempt = 1; attempt <= 5; attempt++)
             {
                 try
                 {
                     return htmlWeb.Load(url);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    if (attempt == 3) throw;
-                    System.Threading.Thread.Sleep(500 * attempt);
+                    if (attempt == 5) throw;
+                    PauseAwareDelay(GetRetryDelay(ex, attempt));
                 }
             }
 
             return null;
         }
 
+        private static int GetRetryDelay(Exception exception, int attempt)
+        {
+            var webException = exception as WebException;
+            using (var response = webException?.Response as HttpWebResponse)
+            {
+                if (response?.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    var retryAfter = response.Headers[HttpResponseHeader.RetryAfter];
+                    if (int.TryParse(retryAfter, out var seconds))
+                    {
+                        return (int)Math.Min(seconds * 1000L, int.MaxValue);
+                    }
+
+                    if (DateTimeOffset.TryParse(retryAfter, out var retryDate))
+                    {
+                        return (int)Math.Max(0, Math.Min((retryDate - DateTimeOffset.UtcNow).TotalMilliseconds, int.MaxValue));
+                    }
+                }
+            }
+
+            return 1000 * (int)Math.Pow(2, attempt - 1);
+        }
+
         #endregion
     }
 }
-    

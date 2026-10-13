@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Xml;
 
 namespace R34Downloader.Services
@@ -16,6 +17,7 @@ namespace R34Downloader.Services
 
         private const string ApiUrl = "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index";
         private const byte PageSize = 100;
+        private const int MaxRequestAttempts = 5;
 
         private static readonly CookieContainer CookieContainer;
         private static readonly HttpClient Client;
@@ -60,7 +62,7 @@ namespace R34Downloader.Services
             {
                 try
                 {
-                    var response = Client.GetStringAsync(GetAuthenticatedUrl($"{ApiUrl}&tags={tags}")).GetAwaiter().GetResult();
+                    var response = GetStringWithRetry(GetAuthenticatedUrl($"{ApiUrl}&tags={tags}"));
                     document.LoadXml(response);
 
                     if (document.DocumentElement?.Name == "error")
@@ -72,7 +74,7 @@ namespace R34Downloader.Services
                 catch (Exception)
                 {
                     if (attempt == 3) throw;
-                    System.Threading.Thread.Sleep(500 * attempt);
+                    Thread.Sleep(500 * attempt);
                 }
             }
 
@@ -101,7 +103,7 @@ namespace R34Downloader.Services
                 {
                     try
                     {
-                        var response = Client.GetStringAsync(GetAuthenticatedUrl($"{ApiUrl}&tags={tags}&pid={pid}")).GetAwaiter().GetResult();
+                        var response = GetStringWithRetry(GetAuthenticatedUrl($"{ApiUrl}&tags={tags}&pid={pid}"));
                         doc.LoadXml(response);
 
                         if (doc.DocumentElement?.Name == "error")
@@ -113,7 +115,7 @@ namespace R34Downloader.Services
                     catch (Exception)
                     {
                         if (attempt == 3) throw;
-                        System.Threading.Thread.Sleep(500 * attempt);
+                        Thread.Sleep(500 * attempt);
                     }
                 }
 
@@ -176,6 +178,42 @@ namespace R34Downloader.Services
             }
 
             return authenticatedUrl;
+        }
+
+        private static string GetStringWithRetry(string url)
+        {
+            for (var attempt = 1; attempt <= MaxRequestAttempts; attempt++)
+            {
+                using (var response = Client.GetAsync(url).GetAwaiter().GetResult())
+                {
+                    if ((int)response.StatusCode == 429 && attempt < MaxRequestAttempts)
+                    {
+                        Thread.Sleep(GetRetryDelay(response, attempt));
+                        continue;
+                    }
+
+                    response.EnsureSuccessStatusCode();
+                    return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                }
+            }
+
+            throw new HttpRequestException("The Rule34 API request failed after repeated rate limits.");
+        }
+
+        private static int GetRetryDelay(HttpResponseMessage response, int attempt)
+        {
+            var retryAfter = response.Headers.RetryAfter;
+            if (retryAfter?.Delta != null)
+            {
+                return (int)Math.Min(retryAfter.Delta.Value.TotalMilliseconds, int.MaxValue);
+            }
+
+            if (retryAfter?.Date != null)
+            {
+                return (int)Math.Max(0, Math.Min((retryAfter.Date.Value - DateTimeOffset.UtcNow).TotalMilliseconds, int.MaxValue));
+            }
+
+            return 1000 * (int)Math.Pow(2, attempt - 1);
         }
 
         #endregion

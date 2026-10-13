@@ -103,78 +103,96 @@ namespace R34Downloader.Services
                     Directory.CreateDirectory(directory);
                 }
 
-                // Simple retry logic (3 attempts)
-                for (int attempt = 1; attempt <= 3; attempt++)
+                // Retry rate limits with the server's suggested delay when available.
+                for (int attempt = 1; attempt <= 5; attempt++)
                 {
                     DownloadControlService.WaitIfPaused();
 
                     try
                     {
-                        var response = Client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result;
-                        response.EnsureSuccessStatusCode();
-
-                        // Get content length from headers
-                        long? contentLength = response.Content.Headers.ContentLength;
-
-                        // Check file size limit before downloading
-                        if (contentLength.HasValue && contentLength.Value > 0)
+                        using (var response = Client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result)
                         {
-                            double fileSizeMBCheck = contentLength.Value / (1024.0 * 1024.0);
-
-                            // If file size limit is enabled and file exceeds limit, skip it
-                            if (SettingsModel.EnableFileSizeLimit && SettingsModel.MaxFileSizeMB > 0 && fileSizeMBCheck > SettingsModel.MaxFileSizeMB)
+                            if ((int)response.StatusCode == 429)
                             {
-                                stopwatch.Stop();
-                                if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
+                                if (attempt == 5)
                                 {
-                                    DownloadLogService.AddLog(id, type, "Skipped", stopwatch.Elapsed.TotalSeconds, fileSizeMBCheck);
-                                }
-                                shouldLog = false;
-                                return;
-                            }
-                        }
-
-                        // If we have content length, use streaming with progress reporting
-                        if (contentLength.HasValue && contentLength.Value > 0)
-                        {
-                            using (var contentStream = response.Content.ReadAsStreamAsync().Result)
-                            using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 8192, useAsync: false))
-                            {
-                                long totalBytes = contentLength.Value;
-                                long downloadedBytes = 0;
-                                byte[] buffer = new byte[8192];
-                                int bytesRead;
-
-                                while ((bytesRead = contentStream.Read(buffer, 0, buffer.Length)) != 0)
-                                {
-                                    DownloadControlService.WaitIfPaused();
-
-                                    fileStream.Write(buffer, 0, bytesRead);
-                                    downloadedBytes += bytesRead;
-
-                                    // Report progress
-                                    double downloadedMB = downloadedBytes / (1024.0 * 1024.0);
-                                    double totalMB = totalBytes / (1024.0 * 1024.0);
-                                    OnDownloadProgress?.Invoke(downloadedMB, totalMB);
+                                    status = "Failed";
+                                    break;
                                 }
 
-                                fileSizeMB = (double)totalBytes / (1024.0 * 1024.0);
+                                PauseAwareDelay(GetRetryDelay(response, attempt));
+                                continue;
                             }
-                        }
-                        else
-                        {
-                            // Fallback to loading all bytes if content length is not available
-                            var data = response.Content.ReadAsByteArrayAsync().Result;
-                            File.WriteAllBytes(filePath, data);
-                            fileSizeMB = (double)data.Length / (1024.0 * 1024.0);
-                        }
 
-                        status = "Downloaded";
-                        break; // Success
+                            response.EnsureSuccessStatusCode();
+
+                            // Get content length from headers
+                            long? contentLength = response.Content.Headers.ContentLength;
+
+                            // Check file size limit before downloading
+                            if (contentLength.HasValue && contentLength.Value > 0)
+                            {
+                                double fileSizeMBCheck = contentLength.Value / (1024.0 * 1024.0);
+
+                                // If file size limit is enabled and file exceeds limit, skip it
+                                if (SettingsModel.EnableFileSizeLimit && SettingsModel.MaxFileSizeMB > 0 && fileSizeMBCheck > SettingsModel.MaxFileSizeMB)
+                                {
+                                    // Skipped oversized files still issue a request, so pace them too.
+                                    PauseAwareDelay(500);
+                                    stopwatch.Stop();
+                                    if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
+                                    {
+                                        DownloadLogService.AddLog(id, type, "Skipped", stopwatch.Elapsed.TotalSeconds, fileSizeMBCheck);
+                                    }
+                                    shouldLog = false;
+                                    return;
+                                }
+                            }
+
+                            // If we have content length, use streaming with progress reporting
+                            if (contentLength.HasValue && contentLength.Value > 0)
+                            {
+                                using (var contentStream = response.Content.ReadAsStreamAsync().Result)
+                                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 8192, useAsync: false))
+                                {
+                                    long totalBytes = contentLength.Value;
+                                    long downloadedBytes = 0;
+                                    byte[] buffer = new byte[8192];
+                                    int bytesRead;
+
+                                    while ((bytesRead = contentStream.Read(buffer, 0, buffer.Length)) != 0)
+                                    {
+                                        DownloadControlService.WaitIfPaused();
+
+                                        fileStream.Write(buffer, 0, bytesRead);
+                                        downloadedBytes += bytesRead;
+
+                                        // Report progress
+                                        double downloadedMB = downloadedBytes / (1024.0 * 1024.0);
+                                        double totalMB = totalBytes / (1024.0 * 1024.0);
+                                        OnDownloadProgress?.Invoke(downloadedMB, totalMB);
+                                    }
+
+                                    fileSizeMB = (double)totalBytes / (1024.0 * 1024.0);
+                                }
+                            }
+                            else
+                            {
+                                // Fallback to loading all bytes if content length is not available
+                                var data = response.Content.ReadAsByteArrayAsync().Result;
+                                File.WriteAllBytes(filePath, data);
+                                fileSizeMB = (double)data.Length / (1024.0 * 1024.0);
+                            }
+
+                            status = "Downloaded";
+                            // Keep consecutive downloads and skipped oversized files from flooding the host.
+                            PauseAwareDelay(500);
+                            break; // Success
+                        }
                     }
                     catch (Exception ex)
                     {
-                        if (attempt == 3)
+                        if (attempt == 5)
                         {
                             status = "Failed";
                         }
@@ -209,6 +227,22 @@ namespace R34Downloader.Services
                 System.Threading.Thread.Sleep(step);
                 elapsed += step;
             }
+        }
+
+        private static int GetRetryDelay(HttpResponseMessage response, int attempt)
+        {
+            var retryAfter = response.Headers.RetryAfter;
+            if (retryAfter?.Delta != null)
+            {
+                return (int)Math.Min(retryAfter.Delta.Value.TotalMilliseconds, int.MaxValue);
+            }
+
+            if (retryAfter?.Date != null)
+            {
+                return (int)Math.Max(0, Math.Min((retryAfter.Date.Value - DateTimeOffset.UtcNow).TotalMilliseconds, int.MaxValue));
+            }
+
+            return 1000 * (int)Math.Pow(2, attempt - 1);
         }
 
         #endregion
