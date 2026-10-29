@@ -23,6 +23,7 @@ namespace R34Downloader.Forms
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.button1 = UiTheme.CreateButton("Continue", true);
             this.label2 = UiTheme.CreateLabel("Choose how many results to include.", 9F, false, UiTheme.Muted);
+            this.checkBoxDownloadAll = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
@@ -80,9 +81,10 @@ namespace R34Downloader.Forms
             quantityLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             quantityLayout.Padding = new System.Windows.Forms.Padding(20);
             quantityLayout.ColumnCount = 1;
-            quantityLayout.RowCount = 6;
+            quantityLayout.RowCount = 7;
             quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
             quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
             quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
             quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
@@ -91,6 +93,10 @@ namespace R34Downloader.Forms
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.AutoSize = false;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.checkBoxDownloadAll.Text = "Download every available post";
+            UiTheme.StyleCheckBox(this.checkBoxDownloadAll);
+            this.checkBoxDownloadAll.Margin = new System.Windows.Forms.Padding(0, 4, 0, 2);
+            this.checkBoxDownloadAll.CheckedChanged += new System.EventHandler(this.checkBoxDownloadAll_CheckedChanged);
             countControls.BackColor = UiTheme.Surface;
             countControls.Dock = System.Windows.Forms.DockStyle.Fill;
             countControls.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
@@ -133,9 +139,10 @@ namespace R34Downloader.Forms
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             quantityLayout.Controls.Add(this.label1, 0, 0);
             quantityLayout.Controls.Add(this.label2, 0, 1);
-            quantityLayout.Controls.Add(countControls, 0, 2);
-            quantityLayout.Controls.Add(quantityTop, 0, 3);
-            quantityLayout.Controls.Add(this.trackBar1, 0, 4);
+            quantityLayout.Controls.Add(this.checkBoxDownloadAll, 0, 2);
+            quantityLayout.Controls.Add(countControls, 0, 3);
+            quantityLayout.Controls.Add(quantityTop, 0, 4);
+            quantityLayout.Controls.Add(this.trackBar1, 0, 5);
             quantityCard.Controls.Add(quantityLayout);
 
             formatsCard.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
@@ -206,8 +213,8 @@ namespace R34Downloader.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = UiTheme.Canvas;
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.ClientSize = new System.Drawing.Size(760, 450);
-            this.MinimumSize = new System.Drawing.Size(700, 420);
+            this.ClientSize = new System.Drawing.Size(760, 490);
+            this.MinimumSize = new System.Drawing.Size(700, 470);
             this.Controls.Add(root);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -227,6 +234,7 @@ namespace R34Downloader.Forms
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox checkBoxDownloadAll;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;

@@ -38,6 +38,13 @@ namespace R34Downloader.Forms
             label2.Text = _maxCount.ToString("N0") + " posts available.";
         }
 
+        private void checkBoxDownloadAll_CheckedChanged(object sender, EventArgs e)
+        {
+            var useFullResultSet = checkBoxDownloadAll.Checked;
+            trackBar1.Enabled = !useFullResultSet;
+            numericUpDown1.Enabled = !useFullResultSet;
+        }
+
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
             numericUpDown1.Value = trackBar1.Value;
@@ -59,7 +66,9 @@ namespace R34Downloader.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SettingsModel.Limit = Convert.ToUInt16(trackBar1.Value);
+            SettingsModel.Limit = checkBoxDownloadAll.Checked
+                ? _maxCount
+                : Convert.ToUInt16(trackBar1.Value);
             SettingsModel.Images = checkBox1.Checked;
             SettingsModel.Gif = checkBox2.Checked;
             SettingsModel.Video = checkBox3.Checked;
