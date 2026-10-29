@@ -17,7 +17,6 @@ namespace R34Downloader.Services
 
         private const string ApiUrl = "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index";
         private const byte PageSize = 100;
-        private const int MaxRequestAttempts = 5;
 
         private static readonly CookieContainer CookieContainer;
         private static readonly HttpClient Client;
@@ -182,22 +181,52 @@ namespace R34Downloader.Services
 
         private static string GetStringWithRetry(string url)
         {
-            for (var attempt = 1; attempt <= MaxRequestAttempts; attempt++)
+            var attempt = 1;
+            while (true)
             {
-                using (var response = Client.GetAsync(url).GetAwaiter().GetResult())
+                DownloadControlService.WaitIfPaused();
+                int? responseStatusCode = null;
+
+                try
                 {
-                    if ((int)response.StatusCode == 429 && attempt < MaxRequestAttempts)
+                    using (var response = Client.GetAsync(url).GetAwaiter().GetResult())
                     {
-                        Thread.Sleep(GetRetryDelay(response, attempt));
-                        continue;
+                        responseStatusCode = (int)response.StatusCode;
+                        if (IsTransientHttpStatus(responseStatusCode.Value))
+                        {
+                            DownloadControlService.ReportRetry("Temporary Rule34 API issue; retrying...");
+                            var retryDelay = response.StatusCode == HttpStatusCode.TooManyRequests
+                                ? GetRetryDelay(response, attempt)
+                                : GetNetworkRetryDelay(attempt);
+                            response.Dispose();
+                            PauseAwareDelay(retryDelay);
+                            attempt++;
+                            continue;
+                        }
+
+                        response.EnsureSuccessStatusCode();
+                        return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // HttpClient also throws HttpRequestException for permanent HTTP errors;
+                    // don't retry those after a response has already arrived.
+                    if (responseStatusCode.HasValue && !IsTransientHttpStatus(responseStatusCode.Value))
+                    {
+                        throw;
                     }
 
-                    response.EnsureSuccessStatusCode();
-                    return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    if (!IsTransientNetworkException(ex))
+                    {
+                        throw;
+                    }
+
+                    DownloadControlService.ReportRetry("Temporary Rule34 API issue; retrying...");
+                    PauseAwareDelay(GetNetworkRetryDelay(attempt));
+                    attempt++;
                 }
             }
-
-            throw new HttpRequestException("The Rule34 API request failed after repeated rate limits.");
         }
 
         private static int GetRetryDelay(HttpResponseMessage response, int attempt)
@@ -213,7 +242,47 @@ namespace R34Downloader.Services
                 return (int)Math.Max(0, Math.Min((retryAfter.Date.Value - DateTimeOffset.UtcNow).TotalMilliseconds, int.MaxValue));
             }
 
-            return 1000 * (int)Math.Pow(2, attempt - 1);
+            return GetNetworkRetryDelay(attempt);
+        }
+
+        private static bool IsTransientHttpStatus(int statusCode)
+        {
+            return statusCode == 408 || statusCode == 429 || statusCode >= 500;
+        }
+
+        private static int GetNetworkRetryDelay(int attempt)
+        {
+            // Back off to 30 seconds, then keep checking at that interval.
+            var exponent = Math.Min(Math.Max(attempt - 1, 0), 5);
+            return Math.Min(1000 * (int)Math.Pow(2, exponent), 30000);
+        }
+
+        private static bool IsTransientNetworkException(Exception exception)
+        {
+            for (var current = exception; current != null; current = current.InnerException)
+            {
+                if (current is HttpRequestException ||
+                    current is System.Threading.Tasks.TaskCanceledException ||
+                    current is IOException ||
+                    current is WebException)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void PauseAwareDelay(int milliseconds)
+        {
+            var elapsed = 0;
+            while (elapsed < milliseconds)
+            {
+                DownloadControlService.WaitIfPaused();
+                var step = Math.Min(100, milliseconds - elapsed);
+                Thread.Sleep(step);
+                elapsed += step;
+            }
         }
 
         #endregion

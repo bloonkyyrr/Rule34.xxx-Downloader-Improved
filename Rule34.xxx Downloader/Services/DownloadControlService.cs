@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 
 namespace R34Downloader.Services
@@ -8,6 +9,8 @@ namespace R34Downloader.Services
     public static class DownloadControlService
     {
         private static readonly ManualResetEventSlim PauseGate = new ManualResetEventSlim(true);
+
+        public static Action<string> OnRetry { get; set; }
 
         public static bool IsPaused => !PauseGate.IsSet;
 
@@ -29,6 +32,18 @@ namespace R34Downloader.Services
         public static void WaitIfPaused()
         {
             PauseGate.Wait();
+        }
+
+        public static void ReportRetry(string message)
+        {
+            try
+            {
+                OnRetry?.Invoke(message);
+            }
+            catch
+            {
+                // A status display failure must not interrupt a download retry.
+            }
         }
     }
 }

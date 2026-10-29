@@ -80,6 +80,7 @@ namespace R34Downloader.Services
             DownloadControlService.WaitIfPaused();
 
             var stopwatch = Stopwatch.StartNew();
+            var temporaryFilePath = filePath + ".download";
             string status = "Downloaded";
             double fileSizeMB = 0;
             bool shouldLog = true;
@@ -103,8 +104,10 @@ namespace R34Downloader.Services
                     Directory.CreateDirectory(directory);
                 }
 
-                // Retry rate limits with the server's suggested delay when available.
-                for (int attempt = 1; attempt <= 5; attempt++)
+                // Keep retrying transient network failures until the connection returns.
+                // Each attempt starts a fresh temporary file so partial downloads are never
+                // mistaken for complete files on a later run.
+                for (int attempt = 1; ; attempt++)
                 {
                     DownloadControlService.WaitIfPaused();
 
@@ -112,19 +115,23 @@ namespace R34Downloader.Services
                     {
                         using (var response = Client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result)
                         {
-                            if ((int)response.StatusCode == 429)
+                            var statusCode = (int)response.StatusCode;
+                            if (statusCode == 429 || statusCode == 408 || statusCode >= 500)
                             {
-                                if (attempt == 5)
-                                {
-                                    status = "Failed";
-                                    break;
-                                }
-
-                                PauseAwareDelay(GetRetryDelay(response, attempt));
+                                DownloadControlService.ReportRetry("Temporary media request issue; retrying...");
+                                var retryDelay = statusCode == 429
+                                    ? GetRetryDelay(response, attempt)
+                                    : GetNetworkRetryDelay(attempt);
+                                response.Dispose();
+                                PauseAwareDelay(retryDelay);
                                 continue;
                             }
 
-                            response.EnsureSuccessStatusCode();
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                status = "Failed";
+                                break;
+                            }
 
                             // Get content length from headers
                             long? contentLength = response.Content.Headers.ContentLength;
@@ -149,41 +156,60 @@ namespace R34Downloader.Services
                                 }
                             }
 
-                            // If we have content length, use streaming with progress reporting
-                            if (contentLength.HasValue && contentLength.Value > 0)
+                            // Stream to a temporary file so interrupted transfers can be retried safely.
+                            using (var contentStream = ReadResponseStream(response.Content))
+                            using (var fileStream = new FileStream(temporaryFilePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 8192, useAsync: false))
                             {
-                                using (var contentStream = response.Content.ReadAsStreamAsync().Result)
-                                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None, bufferSize: 8192, useAsync: false))
+                                long downloadedBytes = 0;
+                                byte[] buffer = new byte[8192];
+                                int bytesRead;
+
+                                while (true)
                                 {
-                                    long totalBytes = contentLength.Value;
-                                    long downloadedBytes = 0;
-                                    byte[] buffer = new byte[8192];
-                                    int bytesRead;
-
-                                    while ((bytesRead = contentStream.Read(buffer, 0, buffer.Length)) != 0)
+                                    try
                                     {
-                                        DownloadControlService.WaitIfPaused();
+                                        bytesRead = contentStream.Read(buffer, 0, buffer.Length);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        // Errors while reading this response stream are network
+                                        // interruptions; file-write errors remain non-retryable.
+                                        if (IsTransientNetworkException(ex) || ContainsIOException(ex))
+                                        {
+                                            throw new RetryableDownloadException(ex);
+                                        }
 
-                                        fileStream.Write(buffer, 0, bytesRead);
-                                        downloadedBytes += bytesRead;
-
-                                        // Report progress
-                                        double downloadedMB = downloadedBytes / (1024.0 * 1024.0);
-                                        double totalMB = totalBytes / (1024.0 * 1024.0);
-                                        OnDownloadProgress?.Invoke(downloadedMB, totalMB);
+                                        throw;
                                     }
 
-                                    fileSizeMB = (double)totalBytes / (1024.0 * 1024.0);
+                                    if (bytesRead == 0)
+                                    {
+                                        break;
+                                    }
+
+                                    DownloadControlService.WaitIfPaused();
+                                    fileStream.Write(buffer, 0, bytesRead);
+                                    downloadedBytes += bytesRead;
+
+                                    // Report progress when the server supplies a total size.
+                                    if (contentLength.HasValue && contentLength.Value > 0)
+                                    {
+                                        double downloadedMB = downloadedBytes / (1024.0 * 1024.0);
+                                        double totalMB = contentLength.Value / (1024.0 * 1024.0);
+                                        OnDownloadProgress?.Invoke(downloadedMB, totalMB);
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                // Fallback to loading all bytes if content length is not available
-                                var data = response.Content.ReadAsByteArrayAsync().Result;
-                                File.WriteAllBytes(filePath, data);
-                                fileSizeMB = (double)data.Length / (1024.0 * 1024.0);
+
+                                if (contentLength.HasValue && downloadedBytes != contentLength.Value)
+                                {
+                                    throw new RetryableDownloadException(
+                                        new IOException("The response ended before the complete file was received."));
+                                }
+
+                                fileSizeMB = downloadedBytes / (1024.0 * 1024.0);
                             }
 
+                            File.Move(temporaryFilePath, filePath);
                             status = "Downloaded";
                             // Keep consecutive downloads and skipped oversized files from flooding the host.
                             PauseAwareDelay(500);
@@ -192,13 +218,15 @@ namespace R34Downloader.Services
                     }
                     catch (Exception ex)
                     {
-                        if (attempt == 5)
+                        if (IsTransientNetworkException(ex))
                         {
-                            status = "Failed";
+                            DownloadControlService.ReportRetry("Temporary media request issue; retrying...");
+                            PauseAwareDelay(GetNetworkRetryDelay(attempt));
                         }
                         else
                         {
-                            PauseAwareDelay(1000 * attempt);
+                            status = "Failed";
+                            break;
                         }
                     }
                 }
@@ -209,6 +237,22 @@ namespace R34Downloader.Services
             }
             finally
             {
+                if (!string.Equals(status, "Downloaded", StringComparison.Ordinal) && File.Exists(temporaryFilePath))
+                {
+                    try
+                    {
+                        File.Delete(temporaryFilePath);
+                    }
+                    catch (IOException)
+                    {
+                        // A leftover temporary file is harmless; it is never treated as complete.
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // Preserve the original download result if cleanup is not permitted.
+                    }
+                }
+
                 stopwatch.Stop();
                 if (shouldLog && !string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(type))
                 {
@@ -242,7 +286,88 @@ namespace R34Downloader.Services
                 return (int)Math.Max(0, Math.Min((retryAfter.Date.Value - DateTimeOffset.UtcNow).TotalMilliseconds, int.MaxValue));
             }
 
-            return 1000 * (int)Math.Pow(2, attempt - 1);
+            return GetNetworkRetryDelay(attempt);
+        }
+
+        private static int GetNetworkRetryDelay(int attempt)
+        {
+            // Back off to 30 seconds, then keep checking at that interval.
+            var exponent = Math.Min(Math.Max(attempt - 1, 0), 5);
+            return Math.Min(1000 * (int)Math.Pow(2, exponent), 30000);
+        }
+
+        private static bool IsTransientNetworkException(Exception exception)
+        {
+            for (var current = exception; current != null; current = current.InnerException)
+            {
+                if (current is RetryableDownloadException ||
+                    current is HttpRequestException ||
+                    current is System.Threading.Tasks.TaskCanceledException)
+                {
+                    return true;
+                }
+
+                var webException = current as WebException;
+                if (webException != null)
+                {
+                    if (webException.Status != WebExceptionStatus.ProtocolError ||
+                        IsTransientHttpStatus(webException.Response as HttpWebResponse))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool IsTransientHttpStatus(HttpWebResponse response)
+        {
+            if (response == null)
+            {
+                return false;
+            }
+
+            var statusCode = (int)response.StatusCode;
+            return statusCode == 408 || statusCode == 429 || statusCode >= 500;
+        }
+
+        private static Stream ReadResponseStream(HttpContent content)
+        {
+            try
+            {
+                return content.ReadAsStreamAsync().Result;
+            }
+            catch (Exception ex)
+            {
+                if (IsTransientNetworkException(ex) || ContainsIOException(ex))
+                {
+                    throw new RetryableDownloadException(ex);
+                }
+
+                throw;
+            }
+        }
+
+        private static bool ContainsIOException(Exception exception)
+        {
+            for (var current = exception; current != null; current = current.InnerException)
+            {
+                if (current is IOException)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private sealed class RetryableDownloadException : Exception
+        {
+            public RetryableDownloadException(Exception innerException)
+                : base("The file transfer was interrupted.", innerException)
+            {
+            }
         }
 
         #endregion

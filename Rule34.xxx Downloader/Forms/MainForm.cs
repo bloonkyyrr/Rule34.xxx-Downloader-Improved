@@ -36,6 +36,7 @@ namespace R34Downloader.Forms
             SettingsModel.BlacklistedTags = Properties.Settings.Default.BlacklistedTags;
             SetStatusText("Welcome!");
             SetProgressText(0, 0);
+            DownloadControlService.OnRetry = SetStatusText;
 
             // Hook up download progress event to show percentage
             DownloadService.OnDownloadProgress = (downloadedMB, totalMB) =>
@@ -252,7 +253,11 @@ namespace R34Downloader.Forms
             toolStripProgressBar1.Value = 0;
 
             var progress = new Progress<int>(SetProgressValue);
-            var progress2 = new Progress<int>(s => SetProgressText(s, SettingsModel.Limit));
+            var progress2 = new Progress<int>(s =>
+            {
+                SetProgressText(s, SettingsModel.Limit);
+                SetStatusText("Downloading content...");
+            });
 
             try
             {
@@ -332,6 +337,7 @@ namespace R34Downloader.Forms
         {
             // The callback is static and can otherwise retain this disposed form after close.
             DownloadService.OnDownloadProgress = null;
+            DownloadControlService.OnRetry = null;
             base.OnFormClosed(e);
         }
 

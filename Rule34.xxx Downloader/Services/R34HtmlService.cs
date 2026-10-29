@@ -343,20 +343,25 @@ namespace R34Downloader.Services
                 }
             };
 
-            for (int attempt = 1; attempt <= 5; attempt++)
+            for (int attempt = 1; ; attempt++)
             {
+                DownloadControlService.WaitIfPaused();
+
                 try
                 {
                     return htmlWeb.Load(url);
                 }
                 catch (Exception ex)
                 {
-                    if (attempt == 5) throw;
+                    if (!IsTransientNetworkException(ex))
+                    {
+                        throw;
+                    }
+
+                    DownloadControlService.ReportRetry("Temporary Rule34 page issue; retrying...");
                     PauseAwareDelay(GetRetryDelay(ex, attempt));
                 }
             }
-
-            return null;
         }
 
         private static int GetRetryDelay(Exception exception, int attempt)
@@ -379,7 +384,42 @@ namespace R34Downloader.Services
                 }
             }
 
-            return 1000 * (int)Math.Pow(2, attempt - 1);
+            var exponent = Math.Min(Math.Max(attempt - 1, 0), 5);
+            return Math.Min(1000 * (int)Math.Pow(2, exponent), 30000);
+        }
+
+        private static bool IsTransientNetworkException(Exception exception)
+        {
+            for (var current = exception; current != null; current = current.InnerException)
+            {
+                var webException = current as WebException;
+                if (webException != null)
+                {
+                    if (webException.Status != WebExceptionStatus.ProtocolError)
+                    {
+                        return true;
+                    }
+
+                    var response = webException.Response as HttpWebResponse;
+                    if (response != null)
+                    {
+                        var statusCode = (int)response.StatusCode;
+                        if (statusCode == 408 || statusCode == 429 || statusCode >= 500)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                if (current is IOException ||
+                    current is System.Net.Sockets.SocketException ||
+                    current is TimeoutException)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion
