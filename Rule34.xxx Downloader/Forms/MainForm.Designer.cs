@@ -2,15 +2,8 @@ namespace R34Downloader.Forms
 {
     partial class MainForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,237 +15,289 @@ namespace R34Downloader.Forms
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button1 = UiTheme.CreateButton("Search");
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.button2 = new System.Windows.Forms.Button();
-            this.buttonPauseResume = new System.Windows.Forms.Button();
+            this.button2 = UiTheme.CreateButton("Download", true);
+            this.buttonPauseResume = UiTheme.CreateButton("Pause");
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button3 = UiTheme.CreateButton("About");
+            this.button4 = UiTheme.CreateButton("Tag syntax");
             this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+            this.buttonSettings = UiTheme.CreateButton("Settings");
+            this.labelModeValue = UiTheme.CreateLabel("Official API", 10F, true, UiTheme.Good);
+            this.labelFileLimitValue = UiTheme.CreateLabel("No file size cap", 10F, true);
+            this.labelBlacklistValue = new System.Windows.Forms.Label();
+
+            var root = new System.Windows.Forms.TableLayoutPanel();
+            var header = new System.Windows.Forms.Panel();
+            var brandMark = new System.Windows.Forms.Panel();
+            var brandMarkText = UiTheme.CreateLabel("34", 13F, true, System.Drawing.Color.White);
+            var title = UiTheme.CreateLabel("Rule34.xxx Downloader", 16F, true);
+            var subtitle = UiTheme.CreateLabel("Search, filter, and save media", 9F, false, UiTheme.Muted);
+            var content = new System.Windows.Forms.TableLayoutPanel();
+            var searchCard = UiTheme.CreateCard();
+            var searchLayout = new System.Windows.Forms.TableLayoutPanel();
+            var searchTitle = UiTheme.CreateLabel("Find your next download", 20F, true);
+            var searchSubtitle = UiTheme.CreateLabel("Use the same tags and filters you use on Rule34.xxx.", 9F, false, UiTheme.Muted);
+            var queryLabel = UiTheme.CreateLabel("SEARCH TAGS", 8.5F, true, UiTheme.Muted);
+            var queryHint = new System.Windows.Forms.Label();
+            var actions = new System.Windows.Forms.FlowLayoutPanel();
+            var utilities = new System.Windows.Forms.FlowLayoutPanel();
+            var profileCard = UiTheme.CreateCard();
+            var profileLayout = new System.Windows.Forms.TableLayoutPanel();
+            var profileTitle = UiTheme.CreateLabel("DOWNLOAD PROFILE", 9F, true, UiTheme.Muted);
+            var profileSubtitle = UiTheme.CreateLabel("Your current filters at a glance.", 9F, false, UiTheme.Muted);
+            var sourceLabel = UiTheme.CreateLabel("Search source", 8.5F, false, UiTheme.Muted);
+            var sizeLabel = UiTheme.CreateLabel("File size limit", 8.5F, false, UiTheme.Muted);
+            var blacklistLabel = UiTheme.CreateLabel("Excluded tags", 8.5F, false, UiTheme.Muted);
+            var profileNote = new System.Windows.Forms.Label();
+
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.textBox1.Location = new System.Drawing.Point(18, 386);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(728, 35);
-            this.textBox1.TabIndex = 1;
+
+            // Main window shell
+            root.BackColor = UiTheme.Canvas;
+            root.ColumnCount = 1;
+            root.RowCount = 3;
+            root.Dock = System.Windows.Forms.DockStyle.Fill;
+            root.Padding = new System.Windows.Forms.Padding(18);
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 72F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+
+            // Header
+            header.BackColor = UiTheme.Surface;
+            header.Dock = System.Windows.Forms.DockStyle.Fill;
+            header.Size = new System.Drawing.Size(1044, 72);
+            header.Padding = new System.Windows.Forms.Padding(18, 12, 18, 12);
+            brandMark.BackColor = UiTheme.Accent;
+            brandMark.Location = new System.Drawing.Point(18, 15);
+            brandMark.Size = new System.Drawing.Size(42, 42);
+            brandMarkText.Location = new System.Drawing.Point(7, 10);
+            brandMarkText.ForeColor = System.Drawing.Color.White;
+            title.Location = new System.Drawing.Point(74, 12);
+            subtitle.Location = new System.Drawing.Point(75, 39);
+            this.buttonSettings.Size = new System.Drawing.Size(116, 40);
+            this.buttonSettings.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.buttonSettings.Location = new System.Drawing.Point(910, 16);
+            this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
+            brandMark.Controls.Add(brandMarkText);
+            header.Controls.Add(brandMark);
+            header.Controls.Add(title);
+            header.Controls.Add(subtitle);
+            header.Controls.Add(this.buttonSettings);
+
+            // Search and profile columns
+            content.BackColor = UiTheme.Canvas;
+            content.Dock = System.Windows.Forms.DockStyle.Fill;
+            content.ColumnCount = 2;
+            content.RowCount = 1;
+            content.Padding = new System.Windows.Forms.Padding(0, 12, 0, 12);
+            content.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
+            content.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+
+            searchCard.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
+            searchLayout.BackColor = UiTheme.Surface;
+            searchLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            searchLayout.ColumnCount = 1;
+            searchLayout.RowCount = 7;
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 52F));
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 54F));
+            searchLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            searchTitle.AutoSize = false;
+            searchTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            searchTitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            searchSubtitle.AutoSize = false;
+            searchSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            searchSubtitle.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            queryLabel.AutoSize = false;
+            queryLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            queryLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.textBox1.Text = "goth -ai_generated";
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(153, 435);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(226, 52);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Search";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // folderBrowserDialog1
-            // 
-            this.folderBrowserDialog1.Description = "Select the folder for the downloaded content";
-            // 
-            // button2
-            // 
-            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.Location = new System.Drawing.Point(388, 435);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(226, 52);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Download";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // buttonPauseResume
-            // 
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Margin = new System.Windows.Forms.Padding(0, 4, 0, 8);
+            UiTheme.StyleInput(this.textBox1);
+            queryHint.AutoSize = false;
+            queryHint.Dock = System.Windows.Forms.DockStyle.Fill;
+            queryHint.Text = "Separate required tags with spaces. Use -tag to exclude and * for wildcards.";
+            queryHint.ForeColor = UiTheme.Muted;
+            queryHint.Font = new System.Drawing.Font("Segoe UI", 9F);
+            queryHint.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+
+            actions.BackColor = UiTheme.Surface;
+            actions.Dock = System.Windows.Forms.DockStyle.Fill;
+            actions.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            actions.WrapContents = true;
+            actions.Margin = new System.Windows.Forms.Padding(0);
+            this.button1.Size = new System.Drawing.Size(116, 42);
+            this.button2.Size = new System.Drawing.Size(132, 42);
+            this.buttonPauseResume.Size = new System.Drawing.Size(116, 42);
             this.buttonPauseResume.Enabled = false;
-            this.buttonPauseResume.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonPauseResume.Location = new System.Drawing.Point(622, 435);
-            this.buttonPauseResume.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.buttonPauseResume.Name = "buttonPauseResume";
-            this.buttonPauseResume.Size = new System.Drawing.Size(124, 52);
-            this.buttonPauseResume.TabIndex = 103;
-            this.buttonPauseResume.Text = "Pause";
-            this.buttonPauseResume.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             this.buttonPauseResume.Click += new System.EventHandler(this.buttonPauseResume_Click);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.AllowMerge = false;
-            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1,
-            this.toolStripProgressBar1,
-            this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 632);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(766, 30);
-            this.statusStrip1.SizingGrip = false;
-            this.statusStrip1.TabIndex = 5;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripStatusLabel1
-            // 
-            this.toolStripStatusLabel1.AutoSize = false;
-            this.toolStripStatusLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.toolStripStatusLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(146, 23);
-            this.toolStripStatusLabel1.Text = "Downloading content...";
-            // 
-            // toolStripProgressBar1
-            // 
-            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
-            this.toolStripProgressBar1.Size = new System.Drawing.Size(399, 22);
-            // 
-            // toolStripStatusLabel2
-            // 
-            this.toolStripStatusLabel2.AutoSize = false;
-            this.toolStripStatusLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(95, 23);
-            this.toolStripStatusLabel2.Text = "12578 / 12542";
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
-            this.linkLabel1.Location = new System.Drawing.Point(220, 571);
-            this.linkLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(327, 26);
-            this.linkLabel1.TabIndex = 6;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "rule34.xxx";
-            this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button3.Location = new System.Drawing.Point(388, 497);
-            this.button3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(159, 38);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "About";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button4.Location = new System.Drawing.Point(220, 497);
-            this.button4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(159, 38);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "Search help";
-            this.button4.UseVisualStyleBackColor = true;
+            actions.Controls.Add(this.button1);
+            actions.Controls.Add(this.button2);
+            actions.Controls.Add(this.buttonPauseResume);
+
+            utilities.BackColor = UiTheme.Surface;
+            utilities.Dock = System.Windows.Forms.DockStyle.Fill;
+            utilities.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            utilities.WrapContents = true;
+            utilities.Margin = new System.Windows.Forms.Padding(0, 4, 0, 0);
+            this.button4.Size = new System.Drawing.Size(112, 34);
+            this.button3.Size = new System.Drawing.Size(84, 34);
             this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Image = global::R34Downloader.Properties.Resources.settings;
-            this.pictureBox2.Location = new System.Drawing.Point(705, 571);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(48, 49);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 101;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::R34Downloader.Properties.Resources.header;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(766, 377);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            // 
-            // linkLabel2
-            // 
-            this.linkLabel2.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel2.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(153)))));
-            this.linkLabel2.Location = new System.Drawing.Point(220, 597);
-            this.linkLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(327, 27);
-            this.linkLabel2.TabIndex = 102;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "app page";
-            this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Text = "Website";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.linkLabel2.AutoSize = true;
+            this.linkLabel2.Text = "Project page";
             this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
-            // 
-            // MainForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            UiTheme.StyleLink(this.linkLabel1);
+            UiTheme.StyleLink(this.linkLabel2);
+            utilities.Controls.Add(this.button4);
+            utilities.Controls.Add(this.button3);
+            utilities.Controls.Add(this.linkLabel1);
+            utilities.Controls.Add(this.linkLabel2);
+
+            searchLayout.Controls.Add(searchTitle, 0, 0);
+            searchLayout.Controls.Add(searchSubtitle, 0, 1);
+            searchLayout.Controls.Add(queryLabel, 0, 2);
+            searchLayout.Controls.Add(this.textBox1, 0, 3);
+            searchLayout.Controls.Add(queryHint, 0, 4);
+            searchLayout.Controls.Add(actions, 0, 5);
+            searchLayout.Controls.Add(utilities, 0, 6);
+            searchCard.Controls.Add(searchLayout);
+
+            // Profile summary card
+            profileCard.Margin = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            profileLayout.BackColor = UiTheme.Surface;
+            profileLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            profileLayout.ColumnCount = 1;
+            profileLayout.RowCount = 8;
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            profileLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            profileTitle.AutoSize = false;
+            profileTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            profileSubtitle.AutoSize = false;
+            profileSubtitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            sourceLabel.AutoSize = false;
+            sourceLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            sourceLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            sizeLabel.AutoSize = false;
+            sizeLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            sizeLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            blacklistLabel.AutoSize = false;
+            blacklistLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            blacklistLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.labelModeValue.AutoSize = false;
+            this.labelModeValue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelModeValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelFileLimitValue.AutoSize = false;
+            this.labelFileLimitValue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelFileLimitValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelBlacklistValue.AutoSize = false;
+            this.labelBlacklistValue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelBlacklistValue.ForeColor = UiTheme.Text;
+            this.labelBlacklistValue.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.labelBlacklistValue.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            profileNote.AutoSize = false;
+            profileNote.Dock = System.Windows.Forms.DockStyle.Fill;
+            profileNote.Text = "Open Settings to change the source, authentication, file size cap, or excluded tags.";
+            profileNote.ForeColor = UiTheme.Muted;
+            profileNote.Font = new System.Drawing.Font("Segoe UI", 9F);
+            profileNote.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            profileLayout.Controls.Add(profileTitle, 0, 0);
+            profileLayout.Controls.Add(profileSubtitle, 0, 1);
+            profileLayout.Controls.Add(sourceLabel, 0, 2);
+            profileLayout.Controls.Add(this.labelModeValue, 0, 3);
+            profileLayout.Controls.Add(sizeLabel, 0, 4);
+            profileLayout.Controls.Add(this.labelFileLimitValue, 0, 5);
+            profileLayout.Controls.Add(blacklistLabel, 0, 6);
+            var profileBottom = new System.Windows.Forms.TableLayoutPanel();
+            profileBottom.BackColor = UiTheme.Surface;
+            profileBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            profileBottom.ColumnCount = 1;
+            profileBottom.RowCount = 2;
+            profileBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 66F));
+            profileBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            profileBottom.Controls.Add(this.labelBlacklistValue, 0, 0);
+            profileBottom.Controls.Add(profileNote, 0, 1);
+            profileLayout.Controls.Add(profileBottom, 0, 7);
+            profileCard.Controls.Add(profileLayout);
+
+            content.Controls.Add(searchCard, 0, 0);
+            content.Controls.Add(profileCard, 1, 0);
+
+            // Progress and status bar
+            this.statusStrip1.AllowMerge = false;
+            this.statusStrip1.BackColor = UiTheme.Surface;
+            this.statusStrip1.ForeColor = UiTheme.Muted;
+            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.statusStrip1.SizingGrip = false;
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.statusStrip1.Font = new System.Drawing.Font("Segoe UI", 8.5F);
+            this.toolStripStatusLabel1.AutoSize = false;
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(430, 22);
+            this.toolStripStatusLabel1.ForeColor = UiTheme.Text;
+            this.toolStripStatusLabel1.Text = "Ready";
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(260, 18);
+            this.toolStripStatusLabel2.AutoSize = false;
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(100, 22);
+            this.toolStripStatusLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.toolStripStatusLabel2.ForeColor = UiTheme.Muted;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+                this.toolStripStatusLabel1,
+                this.toolStripProgressBar1,
+                this.toolStripStatusLabel2});
+
+            root.Controls.Add(header, 0, 0);
+            root.Controls.Add(content, 0, 1);
+            root.Controls.Add(this.statusStrip1, 0, 2);
+
+            this.folderBrowserDialog1.Description = "Choose where downloaded media should be saved.";
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(229)))), ((int)(((byte)(164)))));
-            this.ClientSize = new System.Drawing.Size(766, 662);
-            this.Controls.Add(this.buttonPauseResume);
-            this.Controls.Add(this.linkLabel2);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.linkLabel1);
-            this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.BackColor = UiTheme.Canvas;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ClientSize = new System.Drawing.Size(1080, 720);
+            this.MinimumSize = new System.Drawing.Size(860, 620);
+            this.Controls.Add(root);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Rule34.xxx Downloader 1.0.5";
+            this.Text = "Rule34.xxx Downloader";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button buttonPauseResume;
@@ -263,9 +308,10 @@ namespace R34Downloader.Forms
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
-        private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.LinkLabel linkLabel2;
+        private System.Windows.Forms.Button buttonSettings;
+        private System.Windows.Forms.Label labelModeValue;
+        private System.Windows.Forms.Label labelFileLimitValue;
+        private System.Windows.Forms.Label labelBlacklistValue;
     }
 }
-
-

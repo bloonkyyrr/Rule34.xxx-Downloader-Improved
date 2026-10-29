@@ -34,6 +34,7 @@ namespace R34Downloader.Forms
             SettingsModel.UserId = Properties.Settings.Default.UserId;
             SettingsModel.ApiKey = Properties.Settings.Default.ApiKey;
             SettingsModel.BlacklistedTags = Properties.Settings.Default.BlacklistedTags;
+            UpdateProfileSummary();
             SetStatusText("Welcome!");
             SetProgressText(0, 0);
             DownloadControlService.OnRetry = SetStatusText;
@@ -136,13 +137,13 @@ namespace R34Downloader.Forms
                     var countContent = R34ApiService.GetContentCount(request);
                     if (countContent > 0)
                     {
-                        if (folderBrowserDialog1.ShowDialog() != DialogResult.Cancel)
+                        if (folderBrowserDialog1.ShowDialog(this) != DialogResult.Cancel)
                         {
                             Properties.Settings.Default.Path = folderBrowserDialog1.SelectedPath;
                             Properties.Settings.Default.Save();
 
                             var downloadingForm = new DownloadingForm((ushort)countContent);
-                            downloadingForm.ShowDialog();
+                            downloadingForm.ShowDialog(this);
 
                             if (SettingsModel.Limit > 0)
                             {
@@ -162,14 +163,14 @@ namespace R34Downloader.Forms
                 {
                     if (R34HtmlService.IsSomethingFound(request))
                     {
-                        if (folderBrowserDialog1.ShowDialog() != DialogResult.Cancel)
+                        if (folderBrowserDialog1.ShowDialog(this) != DialogResult.Cancel)
                         {
                             Properties.Settings.Default.Path = folderBrowserDialog1.SelectedPath;
                             Properties.Settings.Default.Save();
 
                             var countContent = R34HtmlService.GetCountContent(request, R34HtmlService.GetMaxPid(request));
                             var downloadingForm = countContent > 0 ? new DownloadingForm((ushort)countContent) : new DownloadingForm(ushort.MaxValue);
-                            downloadingForm.ShowDialog();
+                            downloadingForm.ShowDialog(this);
 
                             if (SettingsModel.Limit > 0)
                             {
@@ -220,10 +221,24 @@ namespace R34Downloader.Forms
             MessageBox.Show(searchHelpMessage, "Search help", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e) // Settings Button
+        private void buttonSettings_Click(object sender, EventArgs e)
         {
             var settingsForm = new SettingsForm();
-            settingsForm.ShowDialog();
+            settingsForm.ShowDialog(this);
+            UpdateProfileSummary();
+        }
+
+        private void UpdateProfileSummary()
+        {
+            labelModeValue.Text = SettingsModel.IsApi ? "Official API" : "HTML page parser";
+            labelFileLimitValue.Text = SettingsModel.EnableFileSizeLimit && SettingsModel.MaxFileSizeMB > 0
+                ? SettingsModel.MaxFileSizeMB.ToString("0.##") + " MB per file"
+                : "No file size cap";
+
+            var blacklistedTags = (SettingsModel.BlacklistedTags ?? string.Empty).Trim();
+            labelBlacklistValue.Text = string.IsNullOrEmpty(blacklistedTags)
+                ? "No tags excluded"
+                : blacklistedTags.Replace(" ", "  ·  ");
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) // Link to rule34.xxx

@@ -369,7 +369,7 @@ namespace R34Downloader.Services
             var webException = exception as WebException;
             using (var response = webException?.Response as HttpWebResponse)
             {
-                if (response?.StatusCode == HttpStatusCode.TooManyRequests)
+                if (response != null && (int)response.StatusCode == 429)
                 {
                     var retryAfter = response.Headers[HttpResponseHeader.RetryAfter];
                     if (int.TryParse(retryAfter, out var seconds))

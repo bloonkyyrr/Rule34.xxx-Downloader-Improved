@@ -42,9 +42,12 @@ namespace R34Downloader.Forms
             numericUpDownFileSizeMB.Enabled = SettingsModel.EnableFileSizeLimit;
         }
 
-        private void radioButton_MouseClick(object sender, MouseEventArgs e)
+        private void radioButton_CheckedChanged(object sender, EventArgs e)
         {
-            SettingsModel.IsApi = radioButton1.Checked;
+            if (((RadioButton)sender).Checked)
+            {
+                SettingsModel.IsApi = radioButton1.Checked;
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -86,7 +89,7 @@ namespace R34Downloader.Forms
         private void buttonLogs_Click(object sender, EventArgs e)
         {
             LogsForm logsForm = new LogsForm();
-            logsForm.Show();
+            logsForm.Show(this);
         }
 
         #endregion

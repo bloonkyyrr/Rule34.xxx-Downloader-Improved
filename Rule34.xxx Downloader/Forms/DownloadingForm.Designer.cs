@@ -1,16 +1,9 @@
-﻿namespace R34Downloader.Forms
+namespace R34Downloader.Forms
 {
     partial class DownloadingForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,217 +15,214 @@
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DownloadingForm));
-            this.label1 = new System.Windows.Forms.Label();
+            this.label1 = UiTheme.CreateLabel("HOW MANY POSTS?", 9F, true, UiTheme.Muted);
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.button1 = UiTheme.CreateButton("Continue", true);
+            this.label2 = UiTheme.CreateLabel("Choose how many results to include.", 9F, false, UiTheme.Muted);
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label3 = UiTheme.CreateLabel("MEDIA TYPES", 9F, true, UiTheme.Muted);
             this.label4 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+
+            var root = new System.Windows.Forms.TableLayoutPanel();
+            var header = new System.Windows.Forms.Panel();
+            var title = UiTheme.CreateLabel("Download selection", 20F, true);
+            var subtitle = UiTheme.CreateLabel("Set a result limit and choose the media you want to save.", 9F, false, UiTheme.Muted);
+            var content = new System.Windows.Forms.TableLayoutPanel();
+            var quantityCard = UiTheme.CreateCard();
+            var quantityLayout = new System.Windows.Forms.TableLayoutPanel();
+            var countControls = new System.Windows.Forms.FlowLayoutPanel();
+            var selectedCountLabel = UiTheme.CreateLabel("Selected amount", 9F, false, UiTheme.Muted);
+            var quantityTop = new System.Windows.Forms.TableLayoutPanel();
+            var rangeLabel = UiTheme.CreateLabel("Drag to adjust", 9F, false, UiTheme.Muted);
+            var availableLabel = UiTheme.CreateLabel("Maximum", 9F, false, UiTheme.Muted);
+            var formatsCard = UiTheme.CreateCard();
+            var formatsLayout = new System.Windows.Forms.TableLayoutPanel();
+            var formatHint = UiTheme.CreateLabel("Select one or more formats.", 9F, false, UiTheme.Muted);
+            var formatChoices = new System.Windows.Forms.FlowLayoutPanel();
+            var footer = new System.Windows.Forms.TableLayoutPanel();
+
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(170, 14);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(375, 25);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Select the amount of content to download:";
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.AutoSize = false;
-            this.trackBar1.Location = new System.Drawing.Point(162, 43);
-            this.trackBar1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.trackBar1.Maximum = 11111;
-            this.trackBar1.Minimum = 1;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(528, 35);
-            this.trackBar1.TabIndex = 2;
-            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBar1.Value = 1;
-            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.numericUpDown1.Location = new System.Drawing.Point(552, 9);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            11111,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(127, 30);
-            this.numericUpDown1.TabIndex = 3;
+
+            root.BackColor = UiTheme.Canvas;
+            root.Dock = System.Windows.Forms.DockStyle.Fill;
+            root.Padding = new System.Windows.Forms.Padding(20);
+            root.ColumnCount = 1;
+            root.RowCount = 3;
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+
+            header.BackColor = UiTheme.Canvas;
+            header.Dock = System.Windows.Forms.DockStyle.Fill;
+            title.Location = new System.Drawing.Point(0, 0);
+            subtitle.Location = new System.Drawing.Point(1, 34);
+            header.Controls.Add(title);
+            header.Controls.Add(subtitle);
+
+            content.BackColor = UiTheme.Canvas;
+            content.Dock = System.Windows.Forms.DockStyle.Fill;
+            content.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            content.ColumnCount = 2;
+            content.RowCount = 1;
+            content.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            content.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+
+            quantityCard.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            quantityLayout.BackColor = UiTheme.Surface;
+            quantityLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            quantityLayout.Padding = new System.Windows.Forms.Padding(20);
+            quantityLayout.ColumnCount = 1;
+            quantityLayout.RowCount = 6;
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+            quantityLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.label1.AutoSize = false;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.AutoSize = false;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            countControls.BackColor = UiTheme.Surface;
+            countControls.Dock = System.Windows.Forms.DockStyle.Fill;
+            countControls.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            countControls.WrapContents = false;
+            countControls.Margin = new System.Windows.Forms.Padding(0);
+            selectedCountLabel.Margin = new System.Windows.Forms.Padding(0, 9, 12, 0);
+            quantityTop.BackColor = UiTheme.Surface;
+            quantityTop.Dock = System.Windows.Forms.DockStyle.Fill;
+            quantityTop.ColumnCount = 2;
+            quantityTop.RowCount = 1;
+            quantityTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            quantityTop.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            this.numericUpDown1.Minimum = 1;
+            this.numericUpDown1.Maximum = 11111;
+            this.numericUpDown1.Value = 1;
+            this.numericUpDown1.Dock = System.Windows.Forms.DockStyle.None;
+            this.numericUpDown1.Size = new System.Drawing.Size(128, 32);
             this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown1.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.numericUpDown1.BackColor = UiTheme.Raised;
+            this.numericUpDown1.ForeColor = UiTheme.Text;
+            this.numericUpDown1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.numericUpDown1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(6, 2, 0, 2);
             this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.Location = new System.Drawing.Point(525, 168);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(154, 51);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "Continue";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(579, 77);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(0, 20);
-            this.label2.TabIndex = 5;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.checkBox1.Location = new System.Drawing.Point(177, 117);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(102, 29);
-            this.checkBox1.TabIndex = 6;
+            countControls.Controls.Add(selectedCountLabel);
+            countControls.Controls.Add(this.numericUpDown1);
+            rangeLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            availableLabel.AutoSize = false;
+            availableLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            availableLabel.TextAlign = System.Drawing.ContentAlignment.BottomRight;
+            quantityTop.Controls.Add(rangeLabel, 0, 0);
+            quantityTop.Controls.Add(availableLabel, 1, 0);
+            this.trackBar1.Minimum = 1;
+            this.trackBar1.Maximum = 11111;
+            this.trackBar1.Value = 1;
+            this.trackBar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar1.AutoSize = false;
+            this.trackBar1.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
+            quantityLayout.Controls.Add(this.label1, 0, 0);
+            quantityLayout.Controls.Add(this.label2, 0, 1);
+            quantityLayout.Controls.Add(countControls, 0, 2);
+            quantityLayout.Controls.Add(quantityTop, 0, 3);
+            quantityLayout.Controls.Add(this.trackBar1, 0, 4);
+            quantityCard.Controls.Add(quantityLayout);
+
+            formatsCard.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            formatsLayout.BackColor = UiTheme.Surface;
+            formatsLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            formatsLayout.Padding = new System.Windows.Forms.Padding(20);
+            formatsLayout.ColumnCount = 1;
+            formatsLayout.RowCount = 3;
+            formatsLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            formatsLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            formatsLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.label3.AutoSize = false;
+            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            formatHint.AutoSize = false;
+            formatHint.Dock = System.Windows.Forms.DockStyle.Fill;
+            formatChoices.BackColor = UiTheme.Surface;
+            formatChoices.Dock = System.Windows.Forms.DockStyle.Fill;
+            formatChoices.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            formatChoices.WrapContents = false;
             this.checkBox1.Text = "Images";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.checkBox2.Location = new System.Drawing.Point(177, 152);
-            this.checkBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(161, 29);
-            this.checkBox2.TabIndex = 7;
-            this.checkBox2.Text = "Gif animations";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
-            // 
-            // checkBox3
-            // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = true;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.checkBox3.Location = new System.Drawing.Point(177, 188);
-            this.checkBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(89, 29);
-            this.checkBox3.TabIndex = 8;
+            this.checkBox2.Text = "GIF animations";
             this.checkBox3.Text = "Video";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox1.Tag = "Images";
+            this.checkBox2.Tag = "GIF animations";
+            this.checkBox3.Tag = "Video";
+            this.checkBox1.Checked = true;
+            this.checkBox2.Checked = true;
+            this.checkBox3.Checked = true;
+            UiTheme.StyleCheckBox(this.checkBox1);
+            UiTheme.StyleCheckBox(this.checkBox2);
+            UiTheme.StyleCheckBox(this.checkBox3);
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
             this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox_CheckedChanged);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(170, 83);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(315, 25);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Select type of content to download:";
-            // 
-            // label4
-            // 
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(382, 117);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(298, 46);
-            this.label4.TabIndex = 10;
-            this.label4.Text = "*Not included in the total amount of content, just be skipped.";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.label4.AutoSize = false;
+            this.label4.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label4.Size = new System.Drawing.Size(200, 58);
+            this.label4.Text = "Excluded formats are skipped and do not count toward the selected total.";
+            this.label4.ForeColor = UiTheme.Muted;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.label4.Visible = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::R34Downloader.Properties.Resources.r34chibi;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(162, 232);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
-            // 
-            // DownloadingForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            formatChoices.Controls.Add(this.checkBox1);
+            formatChoices.Controls.Add(this.checkBox2);
+            formatChoices.Controls.Add(this.checkBox3);
+            formatChoices.Controls.Add(this.label4);
+            formatsLayout.Controls.Add(this.label3, 0, 0);
+            formatsLayout.Controls.Add(formatHint, 0, 1);
+            formatsLayout.Controls.Add(formatChoices, 0, 2);
+            formatsCard.Controls.Add(formatsLayout);
+            content.Controls.Add(quantityCard, 0, 0);
+            content.Controls.Add(formatsCard, 1, 0);
+
+            footer.BackColor = UiTheme.Canvas;
+            footer.Dock = System.Windows.Forms.DockStyle.Fill;
+            footer.ColumnCount = 2;
+            footer.RowCount = 1;
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.button1.Text = "Continue";
+            this.button1.Size = new System.Drawing.Size(140, 42);
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            footer.Controls.Add(this.button1, 1, 0);
+            root.Controls.Add(header, 0, 0);
+            root.Controls.Add(content, 0, 1);
+            root.Controls.Add(footer, 0, 2);
+
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(229)))), ((int)(((byte)(164)))));
-            this.ClientSize = new System.Drawing.Size(693, 232);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.checkBox3);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.trackBar1);
-            this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.BackColor = UiTheme.Canvas;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ClientSize = new System.Drawing.Size(760, 450);
+            this.MinimumSize = new System.Drawing.Size(700, 420);
+            this.Controls.Add(root);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MaximizeBox = false;
             this.Name = "DownloadingForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Rule34.xxx Downloader - Download Settings";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Download selection";
             this.Load += new System.EventHandler(this.DownloadingForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
-
         }
 
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Button button1;

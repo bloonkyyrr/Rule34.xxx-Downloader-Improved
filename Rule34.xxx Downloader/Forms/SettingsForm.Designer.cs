@@ -2,15 +2,8 @@ namespace R34Downloader.Forms
 {
     partial class SettingsForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,266 +15,274 @@ namespace R34Downloader.Forms
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsForm));
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.button1 = new System.Windows.Forms.Button();
-            this.buttonLogs = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button1 = UiTheme.CreateButton("Save settings", true);
+            this.buttonLogs = UiTheme.CreateButton("View download logs");
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label2 = UiTheme.CreateLabel("API key", 8.5F, true, UiTheme.Muted);
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label1 = UiTheme.CreateLabel("USER ID", 8.5F, true, UiTheme.Muted);
             this.numericUpDownFileSizeMB = new System.Windows.Forms.NumericUpDown();
             this.checkBoxFileSizeLimit = new System.Windows.Forms.CheckBox();
-            this.labelFileSizeMB = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.labelBlacklistedTags = new System.Windows.Forms.Label();
+            this.labelFileSizeMB = UiTheme.CreateLabel("MB", 9F, false, UiTheme.Muted);
+            this.labelBlacklistedTags = UiTheme.CreateLabel("Space-separated tags to skip", 9F, false, UiTheme.Muted);
             this.textBoxBlacklistedTags = new System.Windows.Forms.TextBox();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+
+            var root = new System.Windows.Forms.TableLayoutPanel();
+            var header = new System.Windows.Forms.Panel();
+            var title = UiTheme.CreateLabel("Settings", 20F, true);
+            var subtitle = UiTheme.CreateLabel("Tune how posts are found and which files are saved.", 9F, false, UiTheme.Muted);
+            var content = new System.Windows.Forms.TableLayoutPanel();
+            var leftColumn = new System.Windows.Forms.TableLayoutPanel();
+            var rightColumn = new System.Windows.Forms.TableLayoutPanel();
+            var sourceCard = UiTheme.CreateCard();
+            var sourceLayout = new System.Windows.Forms.TableLayoutPanel();
+            var sourceTitle = UiTheme.CreateLabel("SEARCH SOURCE", 9F, true, UiTheme.Muted);
+            var sourceHint = UiTheme.CreateLabel("Choose how the app retrieves post details.", 9F, false, UiTheme.Muted);
+            var sourceChoices = new System.Windows.Forms.FlowLayoutPanel();
+            var authCard = UiTheme.CreateCard();
+            var authLayout = new System.Windows.Forms.TableLayoutPanel();
+            var authTitle = UiTheme.CreateLabel("API AUTHENTICATION", 9F, true, UiTheme.Muted);
+            var authHint = UiTheme.CreateLabel("Optional credentials can improve API access.", 9F, false, UiTheme.Muted);
+            var blacklistCard = UiTheme.CreateCard();
+            var blacklistLayout = new System.Windows.Forms.TableLayoutPanel();
+            var blacklistTitle = UiTheme.CreateLabel("TAG BLACKLIST", 9F, true, UiTheme.Muted);
+            var sizeCard = UiTheme.CreateCard();
+            var sizeLayout = new System.Windows.Forms.TableLayoutPanel();
+            var sizeTitle = UiTheme.CreateLabel("FILE SIZE LIMIT", 9F, true, UiTheme.Muted);
+            var sizeHint = UiTheme.CreateLabel("Skip files larger than the selected limit.", 9F, false, UiTheme.Muted);
+            var sizeControls = new System.Windows.Forms.FlowLayoutPanel();
+            var footer = new System.Windows.Forms.TableLayoutPanel();
+
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFileSizeMB)).BeginInit();
             this.SuspendLayout();
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.radioButton2);
-            this.groupBox1.Controls.Add(this.radioButton1);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(231, 81);
-            this.groupBox1.TabIndex = 12;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = " Download method ";
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(8, 47);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(183, 20);
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "Parsing (if API not working)";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.radioButton_MouseClick);
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
+
+            root.BackColor = UiTheme.Canvas;
+            root.Dock = System.Windows.Forms.DockStyle.Fill;
+            root.Padding = new System.Windows.Forms.Padding(20);
+            root.ColumnCount = 1;
+            root.RowCount = 3;
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 70F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+
+            header.BackColor = UiTheme.Canvas;
+            header.Dock = System.Windows.Forms.DockStyle.Fill;
+            title.Location = new System.Drawing.Point(0, 0);
+            subtitle.Location = new System.Drawing.Point(1, 34);
+            header.Controls.Add(title);
+            header.Controls.Add(subtitle);
+
+            content.BackColor = UiTheme.Canvas;
+            content.Dock = System.Windows.Forms.DockStyle.Fill;
+            content.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
+            content.ColumnCount = 2;
+            content.RowCount = 1;
+            content.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            content.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+
+            leftColumn.BackColor = UiTheme.Canvas;
+            leftColumn.Dock = System.Windows.Forms.DockStyle.Fill;
+            leftColumn.ColumnCount = 1;
+            leftColumn.RowCount = 2;
+            leftColumn.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 188F));
+            leftColumn.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+            sourceLayout.BackColor = UiTheme.Surface;
+            sourceLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            sourceLayout.Padding = new System.Windows.Forms.Padding(20);
+            sourceLayout.ColumnCount = 1;
+            sourceLayout.RowCount = 3;
+            sourceLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 26F));
+            sourceLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            sourceLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            sourceTitle.AutoSize = false;
+            sourceTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            sourceHint.AutoSize = false;
+            sourceHint.Dock = System.Windows.Forms.DockStyle.Fill;
+            sourceChoices.BackColor = UiTheme.Surface;
+            sourceChoices.Dock = System.Windows.Forms.DockStyle.Fill;
+            sourceChoices.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            sourceChoices.WrapContents = false;
+            this.radioButton1.Text = "Official API (recommended)";
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(8, 21);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(146, 20);
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "API (recommended)";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.radioButton_MouseClick);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(168, 367);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 13;
-            this.button1.Text = "OK";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // buttonLogs
-            // 
-            this.buttonLogs.Location = new System.Drawing.Point(12, 367);
-            this.buttonLogs.Name = "buttonLogs";
-            this.buttonLogs.Size = new System.Drawing.Size(75, 23);
-            this.buttonLogs.TabIndex = 14;
-            this.buttonLogs.Text = "View Logs";
-            this.buttonLogs.UseVisualStyleBackColor = true;
-            this.buttonLogs.Click += new System.EventHandler(this.buttonLogs_Click);
-            // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.numericUpDownFileSizeMB);
-            this.groupBox3.Controls.Add(this.labelFileSizeMB);
-            this.groupBox3.Controls.Add(this.checkBoxFileSizeLimit);
-            this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox3.Location = new System.Drawing.Point(12, 308);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(231, 53);
-            this.groupBox3.TabIndex = 15;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = " File Size Limit ";
-            // 
-            // checkBoxFileSizeLimit
-            // 
-            this.checkBoxFileSizeLimit.AutoSize = true;
-            this.checkBoxFileSizeLimit.Location = new System.Drawing.Point(8, 21);
-            this.checkBoxFileSizeLimit.Name = "checkBoxFileSizeLimit";
-            this.checkBoxFileSizeLimit.Size = new System.Drawing.Size(79, 20);
-            this.checkBoxFileSizeLimit.TabIndex = 0;
-            this.checkBoxFileSizeLimit.Text = "Enable";
-            this.checkBoxFileSizeLimit.UseVisualStyleBackColor = true;
-            this.checkBoxFileSizeLimit.CheckedChanged += new System.EventHandler(this.checkBoxFileSizeLimit_CheckedChanged);
-            // 
-            // labelFileSizeMB
-            // 
-            this.labelFileSizeMB.AutoSize = true;
-            this.labelFileSizeMB.Location = new System.Drawing.Point(95, 21);
-            this.labelFileSizeMB.Name = "labelFileSizeMB";
-            this.labelFileSizeMB.Size = new System.Drawing.Size(32, 16);
-            this.labelFileSizeMB.TabIndex = 1;
-            this.labelFileSizeMB.Text = "MB:";
-            // 
-            // numericUpDownFileSizeMB
-            // 
-            this.numericUpDownFileSizeMB.DecimalPlaces = 2;
-            this.numericUpDownFileSizeMB.Enabled = false;
-            this.numericUpDownFileSizeMB.Location = new System.Drawing.Point(133, 19);
-            this.numericUpDownFileSizeMB.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
-            this.numericUpDownFileSizeMB.Name = "numericUpDownFileSizeMB";
-            this.numericUpDownFileSizeMB.Size = new System.Drawing.Size(92, 22);
-            this.numericUpDownFileSizeMB.TabIndex = 2;
-            this.numericUpDownFileSizeMB.Value = new decimal(new int[] { 50, 0, 0, 0 });
-            this.numericUpDownFileSizeMB.ValueChanged += new System.EventHandler(this.numericUpDownFileSizeMB_ValueChanged);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.labelBlacklistedTags);
-            this.groupBox4.Controls.Add(this.textBoxBlacklistedTags);
-            this.groupBox4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox4.Location = new System.Drawing.Point(12, 212);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(231, 90);
-            this.groupBox4.TabIndex = 16;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = " Tag blacklist ";
-            // 
-            // labelBlacklistedTags
-            // 
-            this.labelBlacklistedTags.Location = new System.Drawing.Point(8, 18);
-            this.labelBlacklistedTags.Name = "labelBlacklistedTags";
-            this.labelBlacklistedTags.Size = new System.Drawing.Size(217, 16);
-            this.labelBlacklistedTags.TabIndex = 0;
-            this.labelBlacklistedTags.Text = "Skip posts with these tags:";
-            // 
-            // textBoxBlacklistedTags
-            // 
-            this.textBoxBlacklistedTags.Location = new System.Drawing.Point(8, 37);
-            this.textBoxBlacklistedTags.Multiline = true;
-            this.textBoxBlacklistedTags.Name = "textBoxBlacklistedTags";
-            this.textBoxBlacklistedTags.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxBlacklistedTags.Size = new System.Drawing.Size(217, 43);
-            this.textBoxBlacklistedTags.TabIndex = 1;
-            this.textBoxBlacklistedTags.TextChanged += new System.EventHandler(this.textBoxBlacklistedTags_TextChanged);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.textBox2);
-            this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBox1);
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox2.Location = new System.Drawing.Point(12, 99);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(231, 107);
-            this.groupBox2.TabIndex = 14;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = " API Auth (optional) ";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(8, 77);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(217, 22);
-            this.textBox2.TabIndex = 3;
+            this.radioButton2.Text = "HTML parser (fallback)";
+            UiTheme.StyleRadioButton(this.radioButton1);
+            UiTheme.StyleRadioButton(this.radioButton2);
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton_CheckedChanged);
+            sourceChoices.Controls.Add(this.radioButton1);
+            sourceChoices.Controls.Add(this.radioButton2);
+            sourceLayout.Controls.Add(sourceTitle, 0, 0);
+            sourceLayout.Controls.Add(sourceHint, 0, 1);
+            sourceLayout.Controls.Add(sourceChoices, 0, 2);
+            sourceCard.Controls.Add(sourceLayout);
+
+            authCard.Margin = new System.Windows.Forms.Padding(8, 10, 8, 0);
+            authLayout.BackColor = UiTheme.Surface;
+            authLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            authLayout.Padding = new System.Windows.Forms.Padding(20);
+            authLayout.ColumnCount = 1;
+            authLayout.RowCount = 6;
+            authLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            authLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            authLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            authLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            authLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            authLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
+            authTitle.AutoSize = false;
+            authTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            authHint.AutoSize = false;
+            authHint.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.AutoSize = false;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.AutoSize = false;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.textBox2.UseSystemPasswordChar = true;
-            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 58);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 16);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "API Key";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(8, 33);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(217, 22);
-            this.textBox1.TabIndex = 1;
+            UiTheme.StyleInput(this.textBox1);
+            UiTheme.StyleInput(this.textBox2);
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 16);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "User ID";
-            // 
-            // SettingsForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            authLayout.Controls.Add(authTitle, 0, 0);
+            authLayout.Controls.Add(authHint, 0, 1);
+            authLayout.Controls.Add(this.label1, 0, 2);
+            authLayout.Controls.Add(this.textBox1, 0, 3);
+            authLayout.Controls.Add(this.label2, 0, 4);
+            authLayout.Controls.Add(this.textBox2, 0, 5);
+            authCard.Controls.Add(authLayout);
+            leftColumn.Controls.Add(sourceCard, 0, 0);
+            leftColumn.Controls.Add(authCard, 0, 1);
+
+            rightColumn.BackColor = UiTheme.Canvas;
+            rightColumn.Dock = System.Windows.Forms.DockStyle.Fill;
+            rightColumn.ColumnCount = 1;
+            rightColumn.RowCount = 2;
+            rightColumn.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 64F));
+            rightColumn.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 36F));
+
+            blacklistCard.Margin = new System.Windows.Forms.Padding(8, 0, 0, 10);
+            blacklistLayout.BackColor = UiTheme.Surface;
+            blacklistLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            blacklistLayout.Padding = new System.Windows.Forms.Padding(20);
+            blacklistLayout.ColumnCount = 1;
+            blacklistLayout.RowCount = 3;
+            blacklistLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            blacklistLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            blacklistLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            blacklistTitle.AutoSize = false;
+            blacklistTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelBlacklistedTags.AutoSize = false;
+            this.labelBlacklistedTags.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxBlacklistedTags.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxBlacklistedTags.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            UiTheme.StyleInput(this.textBoxBlacklistedTags, true);
+            this.textBoxBlacklistedTags.TextChanged += new System.EventHandler(this.textBoxBlacklistedTags_TextChanged);
+            blacklistLayout.Controls.Add(blacklistTitle, 0, 0);
+            blacklistLayout.Controls.Add(this.labelBlacklistedTags, 0, 1);
+            blacklistLayout.Controls.Add(this.textBoxBlacklistedTags, 0, 2);
+            blacklistCard.Controls.Add(blacklistLayout);
+
+            sizeCard.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            sizeLayout.BackColor = UiTheme.Surface;
+            sizeLayout.Dock = System.Windows.Forms.DockStyle.Fill;
+            sizeLayout.Padding = new System.Windows.Forms.Padding(20);
+            sizeLayout.ColumnCount = 1;
+            sizeLayout.RowCount = 3;
+            sizeLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 28F));
+            sizeLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            sizeLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            sizeTitle.AutoSize = false;
+            sizeTitle.Dock = System.Windows.Forms.DockStyle.Fill;
+            sizeHint.AutoSize = false;
+            sizeHint.Dock = System.Windows.Forms.DockStyle.Fill;
+            sizeControls.BackColor = UiTheme.Surface;
+            sizeControls.Dock = System.Windows.Forms.DockStyle.Fill;
+            sizeControls.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
+            sizeControls.WrapContents = false;
+            this.checkBoxFileSizeLimit.Text = "Enable limit";
+            this.checkBoxFileSizeLimit.CheckedChanged += new System.EventHandler(this.checkBoxFileSizeLimit_CheckedChanged);
+            UiTheme.StyleCheckBox(this.checkBoxFileSizeLimit);
+            this.labelFileSizeMB.Text = "MB";
+            this.labelFileSizeMB.Margin = new System.Windows.Forms.Padding(10, 12, 8, 0);
+            this.numericUpDownFileSizeMB.DecimalPlaces = 2;
+            this.numericUpDownFileSizeMB.Minimum = 0;
+            this.numericUpDownFileSizeMB.Maximum = 100000;
+            this.numericUpDownFileSizeMB.Value = 50;
+            this.numericUpDownFileSizeMB.Enabled = false;
+            this.numericUpDownFileSizeMB.Size = new System.Drawing.Size(112, 30);
+            this.numericUpDownFileSizeMB.BackColor = UiTheme.Raised;
+            this.numericUpDownFileSizeMB.ForeColor = UiTheme.Text;
+            this.numericUpDownFileSizeMB.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.numericUpDownFileSizeMB.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numericUpDownFileSizeMB.ValueChanged += new System.EventHandler(this.numericUpDownFileSizeMB_ValueChanged);
+            sizeControls.Controls.Add(this.checkBoxFileSizeLimit);
+            sizeControls.Controls.Add(this.numericUpDownFileSizeMB);
+            sizeControls.Controls.Add(this.labelFileSizeMB);
+            sizeLayout.Controls.Add(sizeTitle, 0, 0);
+            sizeLayout.Controls.Add(sizeHint, 0, 1);
+            sizeLayout.Controls.Add(sizeControls, 0, 2);
+            sizeCard.Controls.Add(sizeLayout);
+            rightColumn.Controls.Add(blacklistCard, 0, 0);
+            rightColumn.Controls.Add(sizeCard, 0, 1);
+            content.Controls.Add(leftColumn, 0, 0);
+            content.Controls.Add(rightColumn, 1, 0);
+
+            footer.BackColor = UiTheme.Canvas;
+            footer.Dock = System.Windows.Forms.DockStyle.Fill;
+            footer.ColumnCount = 2;
+            footer.RowCount = 1;
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 160F));
+            this.buttonLogs.Text = "View download logs";
+            this.buttonLogs.Size = new System.Drawing.Size(158, 42);
+            this.buttonLogs.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.buttonLogs.Click += new System.EventHandler(this.buttonLogs_Click);
+            this.button1.Text = "Save settings";
+            this.button1.Size = new System.Drawing.Size(148, 42);
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            footer.Controls.Add(this.buttonLogs, 0, 0);
+            footer.Controls.Add(this.button1, 1, 0);
+            root.Controls.Add(header, 0, 0);
+            root.Controls.Add(content, 0, 1);
+            root.Controls.Add(footer, 0, 2);
+
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(229)))), ((int)(((byte)(164)))));
-            this.ClientSize = new System.Drawing.Size(255, 401);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.buttonLogs);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.groupBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.BackColor = UiTheme.Canvas;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ClientSize = new System.Drawing.Size(840, 650);
+            this.MinimumSize = new System.Drawing.Size(760, 610);
+            this.Controls.Add(root);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
+            this.MaximizeBox = true;
             this.Name = "SettingsForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsForm_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFileSizeMB)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonLogs;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.NumericUpDown numericUpDownFileSizeMB;
-        private System.Windows.Forms.Label labelFileSizeMB;
         private System.Windows.Forms.CheckBox checkBoxFileSizeLimit;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Label labelFileSizeMB;
         private System.Windows.Forms.Label labelBlacklistedTags;
         private System.Windows.Forms.TextBox textBoxBlacklistedTags;
     }

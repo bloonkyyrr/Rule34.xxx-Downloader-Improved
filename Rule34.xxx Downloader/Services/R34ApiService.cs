@@ -195,7 +195,7 @@ namespace R34Downloader.Services
                         if (IsTransientHttpStatus(responseStatusCode.Value))
                         {
                             DownloadControlService.ReportRetry("Temporary Rule34 API issue; retrying...");
-                            var retryDelay = response.StatusCode == HttpStatusCode.TooManyRequests
+                            var retryDelay = responseStatusCode.Value == 429
                                 ? GetRetryDelay(response, attempt)
                                 : GetNetworkRetryDelay(attempt);
                             response.Dispose();

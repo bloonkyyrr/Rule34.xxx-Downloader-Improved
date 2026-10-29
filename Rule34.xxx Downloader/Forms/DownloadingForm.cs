@@ -35,6 +35,7 @@ namespace R34Downloader.Forms
         {
             trackBar1.Maximum = _maxCount;
             numericUpDown1.Maximum = _maxCount;
+            label2.Text = _maxCount.ToString("N0") + " posts available.";
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
@@ -49,14 +50,9 @@ namespace R34Downloader.Forms
 
         private void checkBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (((CheckBox)sender).Checked)
-            {
-                ((CheckBox)sender).Text = ((CheckBox)sender).Text.Remove(((CheckBox)sender).Text.Length - 1);
-            }
-            else
-            {
-                ((CheckBox)sender).Text += "*";
-            }
+            var checkBox = (CheckBox)sender;
+            var label = checkBox.Tag as string ?? checkBox.Text;
+            checkBox.Text = checkBox.Checked ? label : label + "  ·  skip";
 
             label4.Visible = !checkBox1.Checked || !checkBox2.Checked || !checkBox3.Checked;
         }

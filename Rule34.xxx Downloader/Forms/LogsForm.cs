@@ -58,7 +58,7 @@ namespace R34Downloader.Forms
                 Name = "Id",
                 HeaderText = "ID",
                 DataPropertyName = "Id",
-                Width = 80
+                FillWeight = 75
             };
             dataGridView1.Columns.Add(idColumn);
 
@@ -68,7 +68,7 @@ namespace R34Downloader.Forms
                 Name = "Type",
                 HeaderText = "Type",
                 DataPropertyName = "Type",
-                Width = 70
+                FillWeight = 70
             };
             dataGridView1.Columns.Add(typeColumn);
 
@@ -78,7 +78,7 @@ namespace R34Downloader.Forms
                 Name = "Status",
                 HeaderText = "Status",
                 DataPropertyName = "Status",
-                Width = 90
+                FillWeight = 75
             };
             dataGridView1.Columns.Add(statusColumn);
 
@@ -88,10 +88,20 @@ namespace R34Downloader.Forms
                 Name = "Duration",
                 HeaderText = "Duration (s)",
                 DataPropertyName = "Duration",
-                Width = 100,
+                FillWeight = 90,
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "0.00" }
             };
             dataGridView1.Columns.Add(durationColumn);
+
+            var sizeColumn = new DataGridViewTextBoxColumn
+            {
+                Name = "FileSizeMB",
+                HeaderText = "Size (MB)",
+                DataPropertyName = "FileSizeMB",
+                FillWeight = 90,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "0.00" }
+            };
+            dataGridView1.Columns.Add(sizeColumn);
 
             // Timestamp Column
             var timestampColumn = new DataGridViewTextBoxColumn
@@ -99,10 +109,32 @@ namespace R34Downloader.Forms
                 Name = "Timestamp",
                 HeaderText = "Timestamp",
                 DataPropertyName = "Timestamp",
-                Width = 150,
+                FillWeight = 150,
                 DefaultCellStyle = new DataGridViewCellStyle { Format = "yyyy-MM-dd HH:mm:ss" }
             };
             dataGridView1.Columns.Add(timestampColumn);
+
+            dataGridView1.CellFormatting += (sender, e) =>
+            {
+                if (e.RowIndex < 0 || e.ColumnIndex < 0 || dataGridView1.Columns[e.ColumnIndex].Name != "Status")
+                {
+                    return;
+                }
+
+                var status = Convert.ToString(e.Value);
+                if (string.Equals(status, "Downloaded", StringComparison.OrdinalIgnoreCase))
+                {
+                    e.CellStyle.ForeColor = UiTheme.Good;
+                }
+                else if (string.Equals(status, "Failed", StringComparison.OrdinalIgnoreCase))
+                {
+                    e.CellStyle.ForeColor = System.Drawing.Color.FromArgb(240, 125, 132);
+                }
+                else
+                {
+                    e.CellStyle.ForeColor = UiTheme.Muted;
+                }
+            };
         }
 
         private void RefreshLogs()
@@ -112,8 +144,8 @@ namespace R34Downloader.Forms
                 var logs = DownloadLogService.GetAllLogs();
                 dataGridView1.DataSource = logs;
 
-                labelLogCount.Text = $"Total Logs: {logs.Count}";
-                labelStatus.Text = "Loaded successfully.";
+                labelLogCount.Text = logs.Count.ToString("N0") + (logs.Count == 1 ? " entry" : " entries");
+                labelStatus.Text = "History updated.";
             }
             catch (Exception ex)
             {

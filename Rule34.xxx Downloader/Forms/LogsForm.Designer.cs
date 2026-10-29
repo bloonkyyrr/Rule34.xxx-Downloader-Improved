@@ -2,15 +2,8 @@ namespace R34Downloader.Forms
 {
     partial class LogsForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -22,98 +15,120 @@ namespace R34Downloader.Forms
 
         #region Windows Form Designer generated code
 
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.buttonRefresh = new System.Windows.Forms.Button();
-            this.buttonClearLogs = new System.Windows.Forms.Button();
-            this.labelLogCount = new System.Windows.Forms.Label();
-            this.labelStatus = new System.Windows.Forms.Label();
+            this.buttonRefresh = UiTheme.CreateButton("Refresh");
+            this.buttonClearLogs = UiTheme.CreateButton("Clear logs");
+            this.labelLogCount = UiTheme.CreateLabel("0 entries", 9F, true);
+            this.labelStatus = UiTheme.CreateLabel("Ready", 9F, false, UiTheme.Muted);
+
+            var root = new System.Windows.Forms.TableLayoutPanel();
+            var header = new System.Windows.Forms.TableLayoutPanel();
+            var heading = new System.Windows.Forms.Panel();
+            var title = UiTheme.CreateLabel("Download history", 20F, true);
+            var subtitle = UiTheme.CreateLabel("A record of completed, skipped, and failed files.", 9F, false, UiTheme.Muted);
+            var gridCard = UiTheme.CreateCard();
+            var footer = new System.Windows.Forms.TableLayoutPanel();
+
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
-            // 
-            // dataGridView1
-            // 
+
+            root.BackColor = UiTheme.Canvas;
+            root.Dock = System.Windows.Forms.DockStyle.Fill;
+            root.Padding = new System.Windows.Forms.Padding(20);
+            root.ColumnCount = 1;
+            root.RowCount = 3;
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 76F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            root.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 58F));
+
+            header.BackColor = UiTheme.Canvas;
+            header.Dock = System.Windows.Forms.DockStyle.Fill;
+            header.ColumnCount = 2;
+            header.RowCount = 1;
+            header.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            header.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 170F));
+            heading.BackColor = UiTheme.Canvas;
+            heading.Dock = System.Windows.Forms.DockStyle.Fill;
+            title.Location = new System.Drawing.Point(0, 0);
+            subtitle.Location = new System.Drawing.Point(1, 34);
+            heading.Controls.Add(title);
+            heading.Controls.Add(subtitle);
+            this.labelLogCount.AutoSize = false;
+            this.labelLogCount.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelLogCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            header.Controls.Add(heading, 0, 0);
+            header.Controls.Add(this.labelLogCount, 1, 0);
+
+            gridCard.Margin = new System.Windows.Forms.Padding(0, 8, 0, 8);
+            gridCard.Padding = new System.Windows.Forms.Padding(1);
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.BackgroundColor = UiTheme.Surface;
+            this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.AutoGenerateColumns = false;
             this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(760, 350);
-            this.dataGridView1.TabIndex = 0;
-            // 
-            // buttonRefresh
-            // 
-            this.buttonRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonRefresh.Location = new System.Drawing.Point(12, 380);
-            this.buttonRefresh.Name = "buttonRefresh";
-            this.buttonRefresh.Size = new System.Drawing.Size(75, 23);
-            this.buttonRefresh.TabIndex = 1;
-            this.buttonRefresh.Text = "Refresh";
-            this.buttonRefresh.UseVisualStyleBackColor = true;
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.MultiSelect = false;
+            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.EnableHeadersVisualStyles = false;
+            this.dataGridView1.GridColor = UiTheme.Border;
+            this.dataGridView1.DefaultCellStyle.BackColor = UiTheme.Surface;
+            this.dataGridView1.DefaultCellStyle.ForeColor = UiTheme.Text;
+            this.dataGridView1.DefaultCellStyle.SelectionBackColor = System.Drawing.Color.FromArgb(92, 48, 72);
+            this.dataGridView1.DefaultCellStyle.SelectionForeColor = System.Drawing.Color.White;
+            this.dataGridView1.DefaultCellStyle.Padding = new System.Windows.Forms.Padding(7, 0, 7, 0);
+            this.dataGridView1.DefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = UiTheme.Raised;
+            this.dataGridView1.AlternatingRowsDefaultCellStyle.ForeColor = UiTheme.Text;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = UiTheme.Raised;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = UiTheme.Muted;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.dataGridView1.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(7, 2, 7, 2);
+            this.dataGridView1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dataGridView1.ColumnHeadersHeight = 38;
+            this.dataGridView1.RowTemplate.Height = 34;
+            this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            gridCard.Controls.Add(this.dataGridView1);
+
+            footer.BackColor = UiTheme.Canvas;
+            footer.Dock = System.Windows.Forms.DockStyle.Fill;
+            footer.ColumnCount = 3;
+            footer.RowCount = 1;
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
+            footer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 130F));
+            this.labelStatus.AutoSize = false;
+            this.labelStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.buttonRefresh.Size = new System.Drawing.Size(108, 42);
+            this.buttonClearLogs.Size = new System.Drawing.Size(118, 42);
+            this.buttonRefresh.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.buttonClearLogs.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
-            // 
-            // buttonClearLogs
-            // 
-            this.buttonClearLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonClearLogs.Location = new System.Drawing.Point(93, 380);
-            this.buttonClearLogs.Name = "buttonClearLogs";
-            this.buttonClearLogs.Size = new System.Drawing.Size(75, 23);
-            this.buttonClearLogs.TabIndex = 2;
-            this.buttonClearLogs.Text = "Clear Logs";
-            this.buttonClearLogs.UseVisualStyleBackColor = true;
             this.buttonClearLogs.Click += new System.EventHandler(this.buttonClearLogs_Click);
-            // 
-            // labelLogCount
-            // 
-            this.labelLogCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelLogCount.AutoSize = true;
-            this.labelLogCount.Location = new System.Drawing.Point(697, 385);
-            this.labelLogCount.Name = "labelLogCount";
-            this.labelLogCount.Size = new System.Drawing.Size(75, 13);
-            this.labelLogCount.TabIndex = 3;
-            this.labelLogCount.Text = "Total Logs: 0";
-            // 
-            // labelStatus
-            // 
-            this.labelStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelStatus.Location = new System.Drawing.Point(12, 365);
-            this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(760, 12);
-            this.labelStatus.TabIndex = 4;
-            this.labelStatus.Text = "Ready";
-            // 
-            // LogsForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            footer.Controls.Add(this.labelStatus, 0, 0);
+            footer.Controls.Add(this.buttonRefresh, 1, 0);
+            footer.Controls.Add(this.buttonClearLogs, 2, 0);
+
+            root.Controls.Add(header, 0, 0);
+            root.Controls.Add(gridCard, 0, 1);
+            root.Controls.Add(footer, 0, 2);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 411);
-            this.Controls.Add(this.labelStatus);
-            this.Controls.Add(this.labelLogCount);
-            this.Controls.Add(this.buttonClearLogs);
-            this.Controls.Add(this.buttonRefresh);
-            this.Controls.Add(this.dataGridView1);
-            this.MaximizeBox = true;
-            this.MinimizeBox = true;
-            this.Name = "LogsForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Download Logs";
+            this.BackColor = UiTheme.Canvas;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ClientSize = new System.Drawing.Size(960, 620);
+            this.MinimumSize = new System.Drawing.Size(800, 500);
+            this.Controls.Add(root);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Download history";
             this.Load += new System.EventHandler(this.LogsForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
-
         }
 
         #endregion
